@@ -1,0 +1,14 @@
+{
+  "name": "farmacia-import",
+  "version": "1.0.0",
+  "description": "Serviço de importação da relação de prescrições da farmácia de alto custo.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Gabriel Quadrado",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.4"
+  }
+}
