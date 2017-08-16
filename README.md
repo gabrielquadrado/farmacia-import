@@ -7,7 +7,7 @@
 
 
 ```sh
-$ node app
+$ npm install
 ```
 ```sh
 $ node index.js
