@@ -1,9 +1,5 @@
 # farmacia-import
 
-
-----------
-
-
 **How to run:**
 
  - Instalar a última versão do nodejs.
