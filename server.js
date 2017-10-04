@@ -1,5 +1,7 @@
 'use strict';
 
+var Server = require('ws').Server;
+var ws = new Server({port: 3001});
 var express = require('express'); 
 var app = express(); 
 var bodyParser = require('body-parser');
@@ -15,6 +17,16 @@ var connection = new mysql({
 });
 
 app.use(bodyParser.json());
+
+var client = null;
+ws.on('connection', function(w){
+  client = w;
+});
+
+function done(){
+  setTimeout(function(){client.send('done');},10000);
+}
+
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -69,17 +81,18 @@ app.post('/upload', (req, res) => {
             objects.push(obj);
           }
         }
-        for(var i in objects)
-          persistObject(objects[i]);
+        for(var i in objects){
+          	persistObject(objects[i], (i == objects.length - 1), res);
+        }
       });
     } else {
       console.log('Erro: Arquivo não enviado.');
     }
   });
-  res.redirect('back');
+  //res.redirect('back');
 });
 
-function persistObject(obj){
+function persistObject(obj, last){
   function insertPaciente(nome, data_nascimento, telefone_principal){
     console.log('Inserindo paciente');
     console.log('nome_paciente: ' + nome);
@@ -131,6 +144,10 @@ function persistObject(obj){
   }
 
   var resultSetPrescricao = insertPrescricao(obj.ini_val, obj.fim_val, obj.qtd_disp, obj.qtd_pres, idMedicamento, idPaciente, obj.solicitante);
+
+  if(last == true){
+    done();
+  }
 }
 
 app.get('/',function(req,res){
@@ -138,5 +155,6 @@ app.get('/',function(req,res){
 });
 
 app.listen('3000', function(){
-    console.log('Running on 3000');
+    console.log('Express server running on 3000');
+    console.log('Websocket listen on 3001');
 });
