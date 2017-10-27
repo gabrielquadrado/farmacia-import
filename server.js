@@ -24,7 +24,7 @@ ws.on('connection', function(w){
 });
 
 function done(){
-  setTimeout(function(){client.send('done');},10000);
+  client.send('done');
 }
 
 
@@ -74,15 +74,15 @@ app.post('/upload', (req, res) => {
               'medicamento' : parts[5] == ' &nbsp;' ? null : parts[5].trim(),
               'qtd_pres' : parts[6] == ' &nbsp;' ? null : parts[6].trim(),
               'qtd_disp' : parts[7] == ' &nbsp;' ? null : parts[7].trim(),
-              'ini_val' : parts[8] == ' &nbsp;' ? null : parts[8].trim(),
-              'fim_val' : parts[8] == ' &nbsp;' ? null : parts[9].trim(),
+              'ini_val' : parts[9] == ' &nbsp;' ? null : parts[9].trim(),
+              'fim_val' : parts[8] == ' &nbsp;' ? null : parts[8].trim(),
               'solicitante' : parts[13] == ' &nbsp;' ? null : parts[13].trim()
             }
             objects.push(obj);
           }
         }
         for(var i in objects){
-          	persistObject(objects[i], (i == objects.length - 1), res);
+            persistObject(objects[i], (i == objects.length - 1), res);
         }
       });
     } else {
