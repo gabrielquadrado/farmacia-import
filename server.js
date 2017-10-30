@@ -7,7 +7,6 @@ var app = express();
 var bodyParser = require('body-parser');
 var fs = require('fs');
 var multer = require('multer');
-var moment = require('moment');
 
 var mysql      = require('sync-mysql');
 var connection = new mysql({
