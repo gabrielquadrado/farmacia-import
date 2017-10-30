@@ -7,6 +7,7 @@ var app = express();
 var bodyParser = require('body-parser');
 var fs = require('fs');
 var multer = require('multer');
+var moment = require('moment');
 
 var mysql      = require('sync-mysql');
 var connection = new mysql({
@@ -63,6 +64,8 @@ app.post('/upload', (req, res) => {
         var objects = [];
         var preObjects = data.split("&&LINEBREAK&&");
         preObjects = preObjects.splice(2);
+        var dataConsolidado = req.file.originalname.split('.')[0];
+        console.log(req.file);
         for(var k in preObjects){
           var obj = {};
           if(!preObjects[k].includes("TOTAL")){
@@ -76,13 +79,14 @@ app.post('/upload', (req, res) => {
               'qtd_disp' : parts[7] == ' &nbsp;' ? null : parts[7].trim(),
               'ini_val' : parts[9] == ' &nbsp;' ? null : parts[9].trim(),
               'fim_val' : parts[8] == ' &nbsp;' ? null : parts[8].trim(),
-              'solicitante' : parts[13] == ' &nbsp;' ? null : parts[13].trim()
+              'solicitante' : parts[13] == ' &nbsp;' ? null : parts[13].trim(),
+              'dataConsolidado' : dataConsolidado == null ? "" : dataConsolidado
             }
             objects.push(obj);
           }
         }
         for(var i in objects){
-            persistObject(objects[i], (i == objects.length - 1), res);
+          persistObject(objects[i], (i == objects.length - 1), res);
         }
       });
     } else {
@@ -107,11 +111,11 @@ function persistObject(obj, last){
     console.log('Medicamento inserido');
     return resultSetMedicamento;
   }
-  function insertPrescricao(fim_val, ini_val, qtd_disp, qtd_pres, id_medicamento, id_paciente, solicitante){
+  function insertPrescricao(fim_val, ini_val, qtd_disp, qtd_pres, id_medicamento, id_paciente, solicitante, dataConsolidado){
     console.log('Inserindo prescricao');
     console.log('id_paciente: ' + id_paciente);
     console.log('id_medicamento: ' + id_medicamento);
-    var resultSetPrescricao = connection.query("INSERT INTO prescricao (fim_validade, inicio_validade, quant_disponivel, quant_prescrita, id_medicamento, id_paciente, solicitante) VALUES (?, ?, ?, ?, ?, ?, ?)", [fim_val, ini_val, qtd_disp, qtd_pres, id_medicamento, id_paciente, solicitante]);
+    var resultSetPrescricao = connection.query("INSERT INTO prescricao (fim_validade, inicio_validade, quant_disponivel, quant_prescrita, id_medicamento, id_paciente, solicitante, dt_consolidacao) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", [fim_val, ini_val, qtd_disp, qtd_pres, id_medicamento, id_paciente, solicitante, dataConsolidado]);
     console.log('id_prescricao: ' + resultSetPrescricao.insertId);
     console.log('Prescricao inserida');
     return resultSetPrescricao;
@@ -143,7 +147,7 @@ function persistObject(obj, last){
     idMedicamento = resultGetMedicamento[0].id_medicamento;
   }
 
-  var resultSetPrescricao = insertPrescricao(obj.ini_val, obj.fim_val, obj.qtd_disp, obj.qtd_pres, idMedicamento, idPaciente, obj.solicitante);
+  var resultSetPrescricao = insertPrescricao(obj.ini_val, obj.fim_val, obj.qtd_disp, obj.qtd_pres, idMedicamento, idPaciente, obj.solicitante, obj.dataConsolidado);
 
   if(last == true){
     done();
