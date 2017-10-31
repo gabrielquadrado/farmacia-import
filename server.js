@@ -64,7 +64,6 @@ app.post('/upload', (req, res) => {
         var preObjects = data.split("&&LINEBREAK&&");
         preObjects = preObjects.splice(2);
         var dataConsolidado = req.file.originalname.split('.')[0];
-        console.log(req.file);
         for(var k in preObjects){
           var obj = {};
           if(!preObjects[k].includes("TOTAL")){
