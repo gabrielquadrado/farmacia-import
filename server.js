@@ -153,7 +153,7 @@ function persistObject(obj, last){
 }
 
 app.get('/',function(req,res){
-  res.sendFile(__dirname + "/view/index.html");
+  res.end();
 });
 
 app.listen('3000', function(){
