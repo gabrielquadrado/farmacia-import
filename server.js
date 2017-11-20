@@ -98,7 +98,8 @@ function persistObject(obj, last){
   function insertPaciente(nome, data_nascimento, telefone_principal){
     console.log('Inserindo paciente');
     console.log('nome_paciente: ' + nome);
-    var resultSetPaciente = connection.query("INSERT INTO paciente (nome, data_nascimento, telefone_principal) VALUES (?, ?, ?)", [nome, data_nascimento, telefone_principal]);
+    var resultSetEndereco = connection.query("INSERT INTO endereco (id_endereco) VALUES (NULL)");
+    var resultSetPaciente = connection.query("INSERT INTO paciente (nome, data_nascimento, telefone_principal, id_endereco) VALUES (?, ?, ?, ?)", [nome, data_nascimento, telefone_principal, resultSetEndereco.insertId]);
     console.log('Paciente inserido');
     return resultSetPaciente;
   }
